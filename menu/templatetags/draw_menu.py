@@ -1,5 +1,6 @@
 from django import template
 from django.forms import model_to_dict
+from django.urls import reverse, NoReverseMatch
 from django.utils.datastructures import MultiValueDictKeyError
 
 from menu.models import Menu
@@ -10,9 +11,11 @@ register = template.Library()
 @register.inclusion_tag('menu/draw_menu.html', takes_context=True)
 def draw_menu(context, menu):
     all_items = get_all_items_by_menu(menu)
+    selected = 0
     super_parents = [item for item in all_items if item['parent'] == all_items[0]['id']]
     try:
         selected_item = get_selected_id_item(all_items, context['request'].GET[menu])
+        selected = selected_item['id']
         expanded_items_id_list = get_expanded_items_id_list(selected_item, all_items)
         for parent in super_parents:
             if parent['id'] in expanded_items_id_list:
@@ -24,27 +27,39 @@ def draw_menu(context, menu):
         result_dict = {'items': super_parents}
 
     result_dict['menu'] = menu
+    result_dict['selected'] = selected
     return result_dict
 
 
 def get_selected_id_item(all_items, selected_id):
+    """Поиск и выдача элемента в списке по ID"""
     return [item for item in all_items if item['id'] == int(selected_id)][0]
 
 
 def get_all_items_by_menu(menu):
-
+    """Формирование списка из элементов меню с заменой named url на абсолютные"""
     all_items = Menu.objects.raw(f'''WITH RECURSIVE rectree AS (
           SELECT * 
             FROM {Menu._meta.db_table} 
-           WHERE title = '{menu}' 
+           WHERE title = %s AND parent_id IS NULL
         UNION ALL 
           SELECT t.* 
             FROM {Menu._meta.db_table} t 
             JOIN rectree
               ON t.parent_id = rectree.id
         ) SELECT * FROM rectree;
-    ''')
-    return [model_to_dict(item) for item in all_items]
+    ''', [menu])
+    result = []
+    count = 0
+    for item in all_items:
+        result.append(model_to_dict(item))
+        try:
+            absolute_url = reverse(str(item.url))
+        except NoReverseMatch:  # если не получилось получить абсолютный url по полю, значит считаем что указан прямой.
+            absolute_url = item.url
+        result[count]['url'] = absolute_url
+        count += 1
+    return result
 
 
 def get_expanded_items_id_list(selected_item, all_items):

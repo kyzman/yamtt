@@ -6,7 +6,7 @@ from django.db import models
 
 class Menu(models.Model):
     title = models.CharField(max_length=255)
-    url = models.CharField(max_length=255, null=True, blank=True)
+    url = models.CharField(max_length=255, blank=True, default='')
     parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
 
     class Meta:
@@ -22,3 +22,4 @@ class Menu(models.Model):
 
     def __str__(self):
         return f"[{self.pk}] {self.title}"
+
