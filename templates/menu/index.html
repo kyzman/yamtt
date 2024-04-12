@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% load draw_menu %}
+{% block content %}
+ {% for menu in menus %}
+  {% draw_menu menu.title %}<br>
+ {% endfor %}
+{% draw_menu 'main_menu' %}
+{% endblock %}

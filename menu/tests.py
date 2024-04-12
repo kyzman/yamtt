@@ -23,3 +23,12 @@ class TestMenuModel(TestCase):
         menu = Menu.objects.get(title='some_menu')
         new_item = Menu.objects.create(title='Меню', parent=menu)
         self.assertIsNotNone(new_item)
+
+    def test_double_root_menu_item(self):
+        with self.assertRaises(IntegrityError):
+            Menu.objects.create(title='some_menu')
+
+    def test_double_menu_items_with_diff_parent(self):
+        menu = Menu.objects.get(title='some_menu')
+        new_item = Menu.objects.create(title='some_menu', parent=menu)
+        self.assertIsNotNone(new_item)
