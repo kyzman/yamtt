@@ -14,9 +14,12 @@ def draw_menu(context, menu):
     selected = 0
     super_parents = [item for item in all_items if item['parent'] == all_items[0]['id']]
     try:
-        selected_item = get_selected_id_item(all_items, context['request'].GET[menu])
-        selected = selected_item['id']
-        expanded_items_id_list = get_expanded_items_id_list(selected_item, all_items)
+        if selected_item := get_selected_id_item(all_items, context['request'].GET[menu]):
+            selected = selected_item['id']
+            expanded_items_id_list = get_expanded_items_id_list(selected_item, all_items)
+        else:
+            selected = 0
+            expanded_items_id_list = []
         for parent in super_parents:
             if parent['id'] in expanded_items_id_list:
                 parent['child_items'] = get_child_items(
@@ -33,7 +36,11 @@ def draw_menu(context, menu):
 
 def get_selected_id_item(all_items, selected_id):
     """Поиск и выдача элемента в списке по ID"""
-    return [item for item in all_items if item['id'] == int(selected_id)][0]
+    try:
+        result = [item for item in all_items if item['id'] == int(selected_id)][0]
+    except:
+        result = None
+    return result
 
 
 def get_all_items_by_menu(menu):
