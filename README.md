@@ -21,24 +21,26 @@
 Для Windows:
 
 ```shell
-git clone git@github.com:kyzman/yamtt.git
+git clone https://github.com/kyzman/yamtt.git
 cd yamtt
 python -m venv venv
 venv/Scripts/activate
 python -m pip install --upgrade pip
-pip install -r requirements.txt
+pip install -r requirments.txt
+python manage.py makemigrations menu
 python manage.py migrate
 ```
 Для Linux:
 
 ```shell
-git clone git@github.com:kyzman/yamtt.git
+git clone https://github.com/kyzman/yamtt.git
 cd yamtt
 python3 -m venv venv
 source venv/bin/activate
 python -m pip install --upgrade pip
-pip install -r requirements.txt
-python manage.py migrate
+pip install -r requirments.txt
+python3 manage.py makemigrations menu
+python3 manage.py migrate
 ```
 
 Для корректной работы приложения необходимо:
