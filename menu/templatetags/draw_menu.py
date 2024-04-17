@@ -60,8 +60,9 @@ def get_all_items_by_menu(menu):
     count = 0
     for item in all_items:
         result.append(model_to_dict(item))
+        parted = str.partition(item.url, '?')
         try:
-            absolute_url = reverse(str(item.url))
+            absolute_url = f"{reverse(parted[0])}{parted[1]}{parted[2]}"
         except NoReverseMatch:  # если не получилось получить абсолютный url по полю, значит считаем что указан прямой.
             absolute_url = item.url
         result[count]['url'] = absolute_url
