@@ -1,12 +1,12 @@
 <ul>
-    {% for item in items %}
-      <li>
-        {% if item.id == selected %}<b>{% endif %}
-          <a href="{{ item.url }}">{{ item.title }}</a>
-        {% if item.id == selected %}</b>{% endif %}
-      </li>
-      {% if item.child_items %}
-        {% include 'menu/draw_menu.html' with items=item.child_items %}
-      {% endif %}
-    {% endfor %}
+	{% for item in items %}
+		<li>
+		{% if item.id == selected %}<b>{% endif %}
+			<a href="{{ item.url }}">{{ item.title }}</a>
+		{% if item.id == selected %}</b>{% endif %}
+		</li>
+	{% if item.child_items %}
+		{% include 'menu/draw_menu.html' with items=item.child_items %}
+	{% endif %}
+	{% endfor %}
 </ul>

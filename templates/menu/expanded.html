@@ -11,10 +11,12 @@
    <li>url - не обязателен. Можно использовать named url</li>
   </ul>
 {% endif %}
- {% for menu in menus %}
-  {% draw_menu_all_expanded menu.title %}<br>
- {% endfor %}
-
+<div>
+<nav>
+{% for menu in menus %}
+{% draw_menu_all_expanded menu.title %}<br>
+{% endfor %}
+ </nav>
+</div>
 <a href="{% url 'menu:index' %}"> Показать все меню в свёрнутом виде</a>
-
 {% endblock %}

@@ -9,7 +9,7 @@ from menu.models import Menu
 register = template.Library()
 
 
-@register.inclusion_tag('menu/draw_menu.html', takes_context=False)
+@register.inclusion_tag('menu/draw_full_menu.html', takes_context=False)
 def draw_menu_all_expanded(menu):
     all_items = get_all_items_by_menu(menu)
     expanded_items_id_list = []
@@ -75,7 +75,7 @@ def get_all_items_by_menu(menu):
         result.append(model_to_dict(item))
         fragmented = str.partition(item.url, '#')
         parted = str.partition(fragmented[0], '?')
-        try:
+        try:  # попытка получить абсолютный адрес по именованному.
             absolute_url = f"{reverse(parted[0])}{parted[1]}{parted[2]}"
         except NoReverseMatch:  # если не получилось получить абсолютный url по полю, значит считаем что указан прямой.
             absolute_url = fragmented[0]
