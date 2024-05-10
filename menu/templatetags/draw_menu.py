@@ -1,7 +1,6 @@
 from django import template
 from django.forms import model_to_dict
 from django.urls import reverse, NoReverseMatch
-from django.utils.datastructures import MultiValueDictKeyError
 
 from menu.models import Menu
 
@@ -11,36 +10,31 @@ register = template.Library()
 @register.inclusion_tag('menu/draw_menu.html', takes_context=True)
 def draw_menu(context, menu):
     all_items = get_all_items_by_menu(menu)
-    selected = 0
+    expanded_items_id_list = []
+    result_dict = {'menu': menu}
     super_parents = [item for item in all_items if item['parent'] == all_items[0]['id']]
     try:
         if selected_item := get_selected_id_item(all_items, context['request'].GET[menu]):
-            selected = selected_item['id']
+            result_dict['selected'] = selected_item['id']
             expanded_items_id_list = get_expanded_items_id_list(selected_item, all_items)
-        else:
-            selected = 0
-            expanded_items_id_list = []
         for parent in super_parents:
             if parent['id'] in expanded_items_id_list:
                 parent['child_items'] = get_child_items(
                     all_items, parent['id'], expanded_items_id_list
                 )
-        result_dict = {'items': super_parents}
-    except MultiValueDictKeyError:
-        result_dict = {'items': super_parents}
-
-    result_dict['menu'] = menu
-    result_dict['selected'] = selected
+    except:
+        pass
+    finally:
+        result_dict.update({'items': super_parents})
     return result_dict
 
 
 def get_selected_id_item(all_items, selected_id):
     """Поиск и выдача элемента в списке по ID"""
     try:
-        result = [item for item in all_items if item['id'] == int(selected_id)][0]
+        return [item for item in all_items if item['id'] == int(selected_id)][0]
     except:
-        result = None
-    return result
+        return None
 
 
 def get_all_items_by_menu(menu):
@@ -60,7 +54,6 @@ def get_all_items_by_menu(menu):
     count = 0
     for item in all_items:
         result.append(model_to_dict(item))
-        print(item.url)
         fragmented = str.partition(item.url, '#')
         parted = str.partition(fragmented[0], '?')
         try:
@@ -75,7 +68,7 @@ def get_all_items_by_menu(menu):
 
 def get_expanded_items_id_list(selected_item, all_items):
     """
-    Формирует список всех развернутых пунктов меню.
+    Формирует список всех развернутых пунктов меню выбранного элемента.
     """
     expanded_items_id_list = []
     item = selected_item
