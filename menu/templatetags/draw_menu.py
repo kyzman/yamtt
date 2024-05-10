@@ -1,3 +1,5 @@
+import pprint
+
 from django import template
 from django.forms import model_to_dict
 from django.urls import reverse, NoReverseMatch
@@ -7,6 +9,23 @@ from menu.models import Menu
 register = template.Library()
 
 
+@register.inclusion_tag('menu/draw_menu.html', takes_context=False)
+def draw_menu_all_expanded(menu):
+    all_items = get_all_items_by_menu(menu)
+    expanded_items_id_list = []
+    result_dict = {'menu': menu}
+    super_parents = [item for item in all_items if item['parent'] == all_items[0]['id']]
+    for item in all_items:
+        expanded_items_id_list.append(item['id'])
+    for parent in super_parents:
+        if parent['id'] in expanded_items_id_list:
+            parent['child_items'] = get_child_items(
+                all_items, parent['id'], expanded_items_id_list
+            )
+    result_dict.update({'items': super_parents})
+    return result_dict
+
+
 @register.inclusion_tag('menu/draw_menu.html', takes_context=True)
 def draw_menu(context, menu):
     all_items = get_all_items_by_menu(menu)
@@ -14,7 +33,7 @@ def draw_menu(context, menu):
     result_dict = {'menu': menu}
     super_parents = [item for item in all_items if item['parent'] == all_items[0]['id']]
     try:
-        if selected_item := get_selected_id_item(all_items, context['request'].GET[menu]):
+        if selected_item := get_selected_item_by_id(all_items, context['request'].GET[menu]):
             result_dict['selected'] = selected_item['id']
             expanded_items_id_list = get_expanded_items_id_list(selected_item, all_items)
         for parent in super_parents:
@@ -29,7 +48,7 @@ def draw_menu(context, menu):
     return result_dict
 
 
-def get_selected_id_item(all_items, selected_id):
+def get_selected_item_by_id(all_items, selected_id):
     """Поиск и выдача элемента в списке по ID"""
     try:
         return [item for item in all_items if item['id'] == int(selected_id)][0]
@@ -74,7 +93,7 @@ def get_expanded_items_id_list(selected_item, all_items):
     item = selected_item
     while item['parent']:
         expanded_items_id_list.append(item['id'])
-        item = get_selected_id_item(all_items, item['parent'])
+        item = get_selected_item_by_id(all_items, item['parent'])
     return expanded_items_id_list
 
 

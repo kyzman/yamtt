@@ -12,9 +12,9 @@
   </ul>
 {% endif %}
  {% for menu in menus %}
-  {% draw_menu menu.title %}<br>
+  {% draw_menu_all_expanded menu.title %}<br>
  {% endfor %}
 
-<a href="{% url 'menu:expanded' %}"> Показать все меню в развёрнутом виде</a>
+<a href="{% url 'menu:index' %}"> Показать все меню в свёрнутом виде</a>
 
 {% endblock %}

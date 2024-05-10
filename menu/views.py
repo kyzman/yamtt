@@ -9,3 +9,10 @@ class IndexView(TemplateView):
     extra_context = {
         'menus':  Menu.objects.filter(parent__isnull=True)
     }
+
+
+class ExpandedView(TemplateView):
+    template_name = 'menu/expanded.html'
+    extra_context = {
+        'menus':  Menu.objects.filter(parent__isnull=True)
+    }
