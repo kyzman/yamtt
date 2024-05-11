@@ -1,5 +1,3 @@
-import pprint
-
 from django import template
 from django.forms import model_to_dict
 from django.urls import reverse, NoReverseMatch
@@ -24,7 +22,6 @@ def draw_menu_all_expanded(menu):
                 all_items, parent['id'], expanded_items_id_list
             )
     result_dict.update({'items': super_parents})
-    pprint.pp(result_dict)
     return result_dict
 
 
