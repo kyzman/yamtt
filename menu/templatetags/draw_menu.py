@@ -13,7 +13,8 @@ register = template.Library()
 def draw_menu_all_expanded(menu):
     all_items = get_all_items_by_menu(menu)
     expanded_items_id_list = []
-    result_dict = {'menu': menu}
+    result_dict = {'menu': {'name': menu,
+                            'id': all_items[0]['id']}}
     super_parents = [item for item in all_items if item['parent'] == all_items[0]['id']]
     for item in all_items:
         expanded_items_id_list.append(item['id'])
@@ -23,6 +24,7 @@ def draw_menu_all_expanded(menu):
                 all_items, parent['id'], expanded_items_id_list
             )
     result_dict.update({'items': super_parents})
+    pprint.pp(result_dict)
     return result_dict
 
 
@@ -30,7 +32,8 @@ def draw_menu_all_expanded(menu):
 def draw_menu(context, menu):
     all_items = get_all_items_by_menu(menu)
     expanded_items_id_list = []
-    result_dict = {'menu': menu}
+    result_dict = {'menu': {'name': menu,
+                            'id': all_items[0]['id']}}
     super_parents = [item for item in all_items if item['parent'] == all_items[0]['id']]
     try:
         if selected_item := get_selected_item_by_id(all_items, context['request'].GET[menu]):

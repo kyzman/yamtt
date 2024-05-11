@@ -9,23 +9,34 @@ nav ul {
 
 nav ul li {
 	width: 200px; /* Задаёт ширину полей для пунктов меню. Важный параметр. */
-	background: #cdcdcd; /* цвет должен быть не прозрачный чтобы меню нормально отображалось */
+	background: #383c54; /* цвет должен быть не прозрачный чтобы меню нормально отображалось */
 	list-style: none; /* декораторы списка лучше отключить */
 	position: relative; /* позиция отображения должна быть рядом с пунктами */
 }
 
 nav ul a {
 	display: block; /* нужно чтобы выделялась вся длинна в пункте, а не только текст */
+   	text-decoration: none;
+	text-emphasis: none;
+	color: #fff;
+	text-align: center;
+	padding: 0 10px;
+	height: 40px;
+	line-height: 40px;
+	transition: all .5s;
 }
 
 nav ul a:hover{
 	background: #808291; /* цвет выделения пункта при наведении */
+	text-decoration: underline;
 }
 
 nav ul ul{
 	position: absolute; /* необходимо для отображения поверх содержимого */
 	display: none; /* запрет отображения вложенных элементов */
 	padding: 0; /* отступов не должно быть чтобы меню не сдвигалось */
+	left: 0;
+	top: 100%;
 }
 
 nav ul li:hover > ul{
@@ -35,5 +46,7 @@ nav ul li:hover > ul{
 nav ul ul ul {
 	top: 0; /* необходимо чтобы первый пункт меню наследника открывался прямо напротив родительского */
 	left: 100%; /* необходимо чтобы пункты открывались слева */
+	top: 0;
+	left: 100%;
 }
 
