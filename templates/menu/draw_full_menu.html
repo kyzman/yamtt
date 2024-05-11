@@ -1,4 +1,4 @@
 <ul>{% for item in items %}
- <li><a href="{{ item.url }}">{{ item.title }}</a></li>
-{% if item.child_items %} {% include 'menu/draw_full_menu.html' with items=item.child_items %}{% endif %}
+ <li><a href="{{ item.url }}">{{ item.title }}</a>
+{% if item.child_items %} {% include 'menu/draw_full_menu.html' with items=item.child_items %}{% else %}</li>{% endif %}
 {% endfor %}</ul>
